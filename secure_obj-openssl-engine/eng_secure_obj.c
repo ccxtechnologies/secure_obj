@@ -739,6 +739,8 @@ static int secure_obj_rsa_priv_dec(int flen, const unsigned char *from,
 		print_error("SK_Decrypt failed with ret code 0x%x\n", sk_ret);
 		ret = -1;
 		goto failure;
+	} else {
+		ret = out_len;
 	}
 
 	print_info("out_len = %u\n", out_len);

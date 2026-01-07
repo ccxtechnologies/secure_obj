@@ -776,6 +776,19 @@ static int bind(ENGINE *engine, const char *id)
 {
 	int ret = 0;
 
+	const char *env_disable = getenv("SECURE_OBJ_DISABLE");
+
+	if (env_disable && strcmp(env_disable, "1") == 0) {
+		print_info("SECURE_OBJ_DISABLE set: Hardware acceleration disabled.\n");
+
+		if (!ENGINE_set_id(engine, engine_id) ||
+			!ENGINE_set_name(engine, engine_name)) {
+			return 0;
+		}
+
+		return 1;
+	}
+
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
 	secureobj_ec = ECDSA_METHOD_new(NULL);
 	if (secureobj_ec == NULL)

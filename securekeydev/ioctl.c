@@ -20,6 +20,7 @@
 #include <linux/completion.h>
 #include <linux/dma-mapping.h>
 #include <linux/version.h>
+#include <linux/uaccess.h>
 
 #include <caam/jr.h>
 #include <caam/error.h>
@@ -195,7 +196,7 @@ static int sk_copy_data_from_user(struct sk_req *req, void *arg)
 		struct sk_req *req)
  *  unmap the Physical address of virtual memory pointers of SK request.
  */
-void sk_unmap(struct device *dev, struct caam_req *ptr,
+static void sk_unmap(struct device *dev, struct caam_req *ptr,
 		struct sk_req *req)
 {
 	switch (req->type) {
@@ -307,7 +308,7 @@ msg_map_fail:
 	return -ENOMEM;
 }
 
-uint32_t sk_map_caam_req(struct device *dev, struct sk_req *req)
+static uint32_t sk_map_caam_req(struct device *dev, struct sk_req *req)
 {
 	struct caam_req *c_req = NULL;
 
@@ -628,5 +629,3 @@ module_init(init_securekeydev);
  *  Specifies the module exit function.
  */
 module_exit(exit_securekeydev);
-
-

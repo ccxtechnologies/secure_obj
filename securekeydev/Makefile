@@ -3,19 +3,23 @@
 # disabled by default. To re-enable it uncomment the
 # corresponding CFLAG.
 #
-KBUILD_CFLAGS += -I${KERNEL_SRC}/include/
-KBUILD_CFLAGS += -I$(src) -I${KERNEL_SRC}/drivers/crypto
+
+# Use ccflags-y instead of KBUILD_CFLAGS for modern kernels
+ccflags-y += -I$(srctree)/include/
+ccflags-y += -I$(src) -I$(srctree)/drivers/crypto
+# Append any EXTRA_CFLAGS passed down by Buildroot/environment
+ccflags-y += $(EXTRA_CFLAGS)
 
 .SILENT:
 securekeydev-objs = securekey_caam.o ioctl.o
 
 obj-m += securekeydev.o
+
 ifneq ($(KERNEL_BUILD),)
 	KERNEL_MAKE_OPTS := -C ${KERNEL_BUILD} M=$(shell pwd)
 else
 	KERNEL_MAKE_OPTS := -C $(KERNEL_SRC) M=$(shell pwd)
 endif
-
 
 all:
 	$(MAKE) $(KERNEL_MAKE_OPTS) modules

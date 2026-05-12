@@ -568,19 +568,21 @@ static struct ctl_table verbosity_ctl_dir[] = {
 		.mode           = 0644,
 		.proc_handler   = proc_dointvec,
 	},
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 4, 0))
 	{},
+#endif
 };
 
+#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 4, 0))
 static struct ctl_table verbosity_ctl_root[] = {
 	{
 		.procname       = "ioctl",
 		.mode           = 0555,
-#if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 4, 0))
 		.child          = verbosity_ctl_dir,
-#endif
 	},
 	{},
 };
+#endif
 static struct ctl_table_header *verbosity_sysctl_header;
 
 /*
@@ -600,8 +602,7 @@ static int __init init_securekeydev(void)
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(6, 4, 0))
 	verbosity_sysctl_header = register_sysctl_table(verbosity_ctl_root);
 #else
-	verbosity_sysctl_header = register_sysctl(verbosity_ctl_root->procname,
-						  verbosity_ctl_dir);
+	verbosity_sysctl_header = register_sysctl("ioctl", verbosity_ctl_dir);
 #endif
 
 	printk("Securekey Driver Module inserted successfully\n");
